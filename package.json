@@ -1,8 +1,8 @@
 {
-  "name": "react-hook-pitfalls",
+  "name": "react-hooks-pitfalls",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://react-hook-pitfalls.netlify.com/",
+  "homepage": "https://react-hooks-pitfalls.netlify.com/",
   "license": "GPLv3",
   "dependencies": {
     "react": "^16.8.6",
