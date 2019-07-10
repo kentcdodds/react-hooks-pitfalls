@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "homepage": "https://react-hook-pitfalls.netlify.com/",
+  "license": "GPLv3",
   "dependencies": {
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
