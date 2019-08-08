@@ -1,4 +1,4 @@
-# Pitfall 4: Overthinking performance
+# Pitfall 3: Thinking in Lifecycles
 
 ```jsx
 class LifecycleComponent extends React.Component {
@@ -67,16 +67,22 @@ class DogInfo extends React.Component {
     })
   }
   render() {
-    return <div>{/* Here I'll render the dog's info */}</div>
+    return <div>{/* render dog's info */}</div>
   }
 }
 ```
 
 <!--
 
+
+
 #SpoilerAlert!
 
+
+
 -->
+
+That's right! We're not handling the `dogId` changing! Let's do that...
 
 ```jsx
 class DogInfo extends React.Component {
@@ -95,7 +101,7 @@ class DogInfo extends React.Component {
     }
   }
   render() {
-    return <div>{/* Here I'll render the dog's info */}</div>
+    return <div>{/* render dog's info */}</div>
   }
 }
 ```
@@ -104,9 +110,19 @@ But there's another bug 🐜! Can you find it?
 
 <!--
 
+
+
 #SpoilerAlert!
 
+
+
 -->
+
+Yup! What happens if the component unmounts before the request finishes?
+
+> Warning: Can't call setState (or forceUpdate) on an unmounted component. This
+> is a no-op, but it indicates a memory leak in your application. To fix, cancel
+> all subscriptions and asynchronous tasks in the componentWillUnmount method.
 
 ```jsx
 class DogInfo extends React.Component {
@@ -134,7 +150,7 @@ class DogInfo extends React.Component {
     this.controller.abort()
   }
   render() {
-    return <div>{/* Here I'll render the dog's info */}</div>
+    return <div>{/* render dog's info */}</div>
   }
 }
 ```
@@ -143,9 +159,15 @@ But there's still another bug 🐛!!!! Can you find it?
 
 <!--
 
+
+
 #SpoilerAlert!
 
+
+
 -->
+
+Yup! What if the `dogId` changes before the request finishes? Same problem 😢
 
 ```jsx
 class DogInfo extends React.Component {
@@ -176,7 +198,73 @@ class DogInfo extends React.Component {
     this.controller.abort()
   }
   render() {
-    return <div>{/* Here I'll render the dog's info */}</div>
+    return <div>{/* render dog's info */}</div>
   }
+}
+```
+
+Phew, glad we squashed all those 😌...
+
+🤔 Hmm... What would this look like with Hooks if we still thought about
+lifecycles?
+
+```jsx
+function DogInfo({dogId}) {
+  const controllerRef = React.useRef(null)
+  const [dog, setDog] = React.useState(null)
+  function fetchDog() {
+    if (controllerRef.current) {
+      controllerRef.current.abort()
+    }
+    controllerRef.current = new AbortController()
+    getDog(dogId, {signal: controllerRef.current.signal})
+      .then(d => setDog(d))
+      .catch(e => {
+        // handle the error
+      })
+  }
+  // didMount
+  React.useEffect(() => {
+    fetchDog()
+  }, [])
+
+  // didUpdate
+  const previousDogId = usePrevious(dogId)
+  useUpdate(() => {
+    if (previousDogId !== dogId) {
+      fetchDog()
+    }
+  })
+
+  // willUnmount
+  React.useEffect(() => {
+    return () => {
+      if (controllerRef.current) {
+        controllerRef.current.abort()
+      }
+    }
+  }, [])
+
+  return <div>{/* render dog's info */}</div>
+}
+```
+
+And what if we didn't... What if we forgot about lifecycles, and thought instead
+about synchronizing side-effects with state?
+
+```jsx
+function DogInfo({dogId}) {
+  const [dog, setDog] = React.useState(null)
+  React.useEffect(() => {
+    const controller = new AbortController()
+    getDog(dogId, {signal: controller.signal})
+      .then(d => setDog(d))
+      .catch(e => {
+        // handle the error
+      })
+    return () => controller.abort()
+  }, [dogId])
+
+  return <div>{/* render dog's info */}</div>
 }
 ```
