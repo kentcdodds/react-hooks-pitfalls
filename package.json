@@ -5,9 +5,12 @@
   "homepage": "https://react-hooks-pitfalls.netlify.com/",
   "license": "GPLv3",
   "dependencies": {
+    "import-all.macro": "^2.0.3",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-scripts": "^3.0.1"
+    "react-error-boundary": "^1.2.5",
+    "react-scripts": "^3.0.1",
+    "vanilla-tilt": "^1.7.0"
   },
   "scripts": {
     "start": "react-scripts start",

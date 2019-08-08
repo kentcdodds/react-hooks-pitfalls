@@ -1,0 +1,50 @@
+# Pitfall 4: Overthinking performance
+
+Does this worry you?
+
+```jsx
+// useAsync is an imaginary custom hook that manages loading state
+// because we don't have suspense yet 😢
+function YoYoScreen({yoyoId}) {
+  const {data, error, loading} = useAsync(fetchYoYo, [yoyoId])
+
+  function handleUpdate(updates) {
+    updateYoYo(yoyoId, updates)
+  }
+
+  return loading ? (
+    'loading...'
+  ) : error ? (
+    'Oh no!'
+  ) : (
+    <YoYoInfo yoyo={data} onUpdate={handleUpdate} />
+  )
+}
+```
+
+Is this better?
+
+```jsx
+function YoYoScreen({yoyoId}) {
+  const {data, error, loading} = useAsync(fetchYoYo, [yoyoId])
+
+  const handleUpdate = React.useCallback(
+    updates => {
+      updateYoYo(yoyoId, updates)
+    },
+    [yoyoId],
+  )
+
+  return loading ? (
+    'loading...'
+  ) : error ? (
+    'Oh no!'
+  ) : (
+    <YoYoInfo yoyo={data} onUpdate={handleUpdate} />
+  )
+}
+```
+
+Maybe it is, maybe it isn't...
+
+[useMemo and useCallback](https://kentcdodds.com/blog/usememo-and-usecallback)
