@@ -195,7 +195,9 @@ class DogInfo extends React.Component {
     }
   }
   componentWillUnmount() {
-    this.controller.abort()
+    if (this.controller) {
+      this.controller.abort()
+    }
   }
   render() {
     return <div>{/* render dog's info */}</div>
