@@ -1,15 +1,44 @@
-# Resources
+# Pitfall 5: Overthinking the testing of hooks
 
-- 📑 https://reactjs.org/hooks
-- 🥚 https://kcd.im/hooks-and-suspense
-- 🏚 ➡ 🏠 https://kcd.im/refactor-react
+You might have a problem refactoring to hooks:
 
-# What font/theme is that?
+```jsx
+test('setOpenIndex sets the open index state properly', () => {
+  // using enzyme
+  const wrapper = mount(<Accordion items={[]} />)
+  expect(wrapper.state('openIndex')).toBe(0)
+  wrapper.instance().setOpenIndex(1)
+  expect(wrapper.state('openIndex')).toBe(1)
+})
+```
 
-- Dank Mono
-- Night Owl
-- VSCode
+Hooks are an Implementation Detail.
 
-# Why are you using your editor for slides?
+This test works whether you're using hooks or not.
 
-I like this idea: https://staltz.com/your-ide-as-a-presentation-tool.html
+```jsx
+test('can open accordion items to see the contents', () => {
+  const hats = {title: 'Favorite Hats', contents: 'Fedoras are classy'}
+  const footware = {
+    title: 'Favorite Footware',
+    contents: 'Flipflops are the best',
+  }
+  const items = [hats, footware]
+  // using React Testing Library
+  const {getByText, queryByText} = render(<Accordion items={items} />)
+  expect(getByText(hats.contents)).toBeInTheDocument()
+  expect(queryByText(footware.contents)).toBeNull()
+  fireEvent.click(getByText(footware.title))
+  expect(getByText(footware.contents)).toBeInTheDocument()
+  expect(queryByText(hats.contents)).toBeNull()
+})
+```
+
+> The more your tests resemble the way your software is used, the more
+> confidence they can give you. –
+> [Kent C. Dodds](https://twitter.com/kentcdodds/status/977018512689455106)
+
+[React Hooks: What's going to happen to my tests?](https://kentcdodds.com/blog/react-hooks-whats-going-to-happen-to-my-tests)
+[Testing Implementation Details](https://kentcdodds.com/blog/testing-implementation-details)
+[How to know what to test](https://kentcdodds.com/blog/how-to-know-what-to-test)
+[🏆 TestingJavaScript.com](https://testingjavascript.com)

@@ -1,0 +1,33 @@
+{
+  "name": "dogs-and-dependencies",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@reach/router": "1.2.1",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-scripts": "^3.0.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "format": "prettier --write \"**/*.+(js|json|css|md|mdx|html)\""
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged && npm run build"
+    }
+  },
+  "browserslist": [">0.2%", "not dead", "not ie <= 11", "not op_mini all"],
+  "devDependencies": {
+    "prettier": "^1.15.2",
+    "husky": "^1.1.4",
+    "lint-staged": "^8.0.4"
+  },
+  "keywords": [],
+  "description": "This is a demo for https://kcd.im/pitfalls"
+}

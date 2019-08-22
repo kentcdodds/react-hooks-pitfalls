@@ -1,40 +1,53 @@
-# Pitfall 5: Overthinking the testing of hooks
+# Pitfall 4: Overthinking performance
 
-You might have a problem refactoring to hooks:
-
-```jsx
-test('setOpenIndex sets the open index state properly', () => {
-  // using enzyme
-  const wrapper = mount(<Accordion items={[]} />)
-  expect(wrapper.state('openIndex')).toBe(0)
-  wrapper.instance().setOpenIndex(1)
-  expect(wrapper.state('openIndex')).toBe(1)
-})
-```
-
-Hooks are an Implementation Detail.
-
-This test works whether you're using hooks or not.
+Does this worry you?
 
 ```jsx
-test('can open accordion items to see the contents', () => {
-  const hats = {title: 'Favorite Hats', contents: 'Fedoras are classy'}
-  const footware = {
-    title: 'Favorite Footware',
-    contents: 'Flipflops are the best',
+// useAsync is an imaginary custom hook that manages loading state
+// because we don't have suspense yet 😢
+function YoYoScreen({yoyoId}) {
+  const {data, error, loading} = useAsync(fetchYoYo, [yoyoId])
+
+  function handleUpdate(updates) {
+    updateYoYo(yoyoId, updates)
   }
-  const items = [hats, footware]
-  // using React Testing Library
-  const {getByText, queryByText} = render(<Accordion items={items} />)
-  expect(getByText(hats.contents)).toBeInTheDocument()
-  expect(queryByText(footware.contents)).toBeNull()
-  fireEvent.click(getByText(footware.title))
-  expect(getByText(footware.contents)).toBeInTheDocument()
-  expect(queryByText(hats.contents)).toBeNull()
-})
+
+  return loading ? (
+    'loading...'
+  ) : error ? (
+    'Oh no!'
+  ) : (
+    <YoYoInfo yoyo={data} onUpdate={handleUpdate} />
+  )
+}
 ```
 
-[React Hooks: What's going to happen to my tests?](https://kentcdodds.com/blog/react-hooks-whats-going-to-happen-to-my-tests)
-[Testing Implementation Details](https://kentcdodds.com/blog/testing-implementation-details)
-[How to know what to test](https://kentcdodds.com/blog/how-to-know-what-to-test)
-[🏆 TestingJavaScript.com](https://testingjavascript.com)
+Is this better?
+
+```jsx
+function YoYoScreen({yoyoId}) {
+  const {data, error, loading} = useAsync(fetchYoYo, [yoyoId])
+
+  const handleUpdate = React.useCallback(
+    updates => {
+      updateYoYo(yoyoId, updates)
+    },
+    [yoyoId],
+  )
+
+  return loading ? (
+    'loading...'
+  ) : error ? (
+    'Oh no!'
+  ) : (
+    <YoYoInfo yoyo={data} onUpdate={handleUpdate} />
+  )
+}
+```
+
+Maybe it is, maybe it isn't...
+
+**Takeaway**: Be considerate of performance, but also be considerate of your
+code complexity. _Measure first._
+
+[useMemo and useCallback](https://kentcdodds.com/blog/usememo-and-usecallback)
