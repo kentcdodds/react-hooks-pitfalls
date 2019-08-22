@@ -3,45 +3,26 @@
 Does this worry you?
 
 ```jsx
-// useAsync is an imaginary custom hook that manages loading state
-// because we don't have suspense yet 😢
-function YoYoScreen({yoyoId}) {
-  const {data, error, loading} = useAsync(fetchYoYo, [yoyoId])
+function YoYoScreen() {
+  const [yoyo, dispatch] = React.useContext(YoYoContext)
 
-  function handleUpdate(updates) {
-    updateYoYo(yoyoId, updates)
-  }
+  const handleUpdate = updates => dispatch({type: 'update', updates})
 
-  return loading ? (
-    'loading...'
-  ) : error ? (
-    'Oh no!'
-  ) : (
-    <YoYoInfo yoyo={data} onUpdate={handleUpdate} />
-  )
+  return <YoYoInfo yoyo={data} onUpdate={handleUpdate} />
 }
 ```
 
 Is this better?
 
 ```jsx
-function YoYoScreen({yoyoId}) {
-  const {data, error, loading} = useAsync(fetchYoYo, [yoyoId])
+function YoYoScreen() {
+  const [yoyo, dispatch] = React.useContext(YoYoContext)
 
-  const handleUpdate = React.useCallback(
-    updates => {
-      updateYoYo(yoyoId, updates)
-    },
-    [yoyoId],
+  const handleUpdate = React.useCallback(updates =>
+    dispatch({type: 'update', updates}),
   )
 
-  return loading ? (
-    'loading...'
-  ) : error ? (
-    'Oh no!'
-  ) : (
-    <YoYoInfo yoyo={data} onUpdate={handleUpdate} />
-  )
+  return <YoYoInfo yoyo={data} onUpdate={handleUpdate} />
 }
 ```
 
