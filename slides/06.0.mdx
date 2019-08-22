@@ -82,7 +82,11 @@ function DogInfo({dogId}) {
 
 😬 Huh... And... why do we need hooks again?
 
-What if we forgot about lifecycles, and thought instead about synchronizing
+Effects give you a mechanism for:
+
+**synchronizing the state of the world with the state of your component**
+
+So what if we forgot about lifecycles, and thought instead about synchronizing
 side-effects with state?
 
 ```jsx
@@ -102,11 +106,6 @@ function DogInfo({dogId}) {
 }
 ```
 
-So if React doesn't give me lifecycles, what is useEffect for really? Effects
-give you a mechanism for:
-
-**synchronizing the state of the world with the state of your component**
-
 > The question is not "when does this effect run" the question is "with which
 > state does this effect synchronize with"
 >
@@ -117,3 +116,7 @@ give you a mechanism for:
 > ```
 >
 > - [Ryan Florence](https://twitter.com/ryanflorence/status/1125041041063665666)
+
+---
+
+**Think about synchronizing side effects to state 🔄**

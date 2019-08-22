@@ -18,8 +18,9 @@ Is this better?
 function YoYoScreen() {
   const [yoyo, dispatch] = React.useContext(YoYoContext)
 
-  const handleUpdate = React.useCallback(updates =>
-    dispatch({type: 'update', updates}),
+  const handleUpdate = React.useCallback(
+    updates => dispatch({type: 'update', updates}),
+    [dispatch],
   )
 
   return <YoYoInfo yoyo={data} onUpdate={handleUpdate} />
@@ -32,3 +33,7 @@ Maybe it is, maybe it isn't...
 code complexity. _Measure first._
 
 [useMemo and useCallback](https://kentcdodds.com/blog/usememo-and-usecallback)
+
+---
+
+**Profile your app, _then_ optimize 🏎💨**

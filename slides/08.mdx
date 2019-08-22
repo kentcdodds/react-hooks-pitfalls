@@ -1,4 +1,4 @@
-# Pitfall 5: Overthinking the testing of hooks
+# Pitfall 5: Testing Implementation Details
 
 You might have a problem refactoring to hooks:
 
@@ -25,11 +25,13 @@ test('can open accordion items to see the contents', () => {
   }
   const items = [hats, footware]
   // using React Testing Library
-  const {getByText, queryByText} = render(<Accordion items={items} />)
-  expect(getByText(hats.contents)).toBeInTheDocument()
+  const {queryByText} = render(<Accordion items={items} />)
+  expect(queryByText(hats.contents)).toBeInTheDocument()
   expect(queryByText(footware.contents)).toBeNull()
-  fireEvent.click(getByText(footware.title))
-  expect(getByText(footware.contents)).toBeInTheDocument()
+
+  fireEvent.click(queryByText(footware.title))
+
+  expect(queryByText(footware.contents)).toBeInTheDocument()
   expect(queryByText(hats.contents)).toBeNull()
 })
 ```
@@ -42,3 +44,7 @@ test('can open accordion items to see the contents', () => {
 [Testing Implementation Details](https://kentcdodds.com/blog/testing-implementation-details)
 [How to know what to test](https://kentcdodds.com/blog/how-to-know-what-to-test)
 [🏆 TestingJavaScript.com](https://testingjavascript.com)
+
+---
+
+**Avoid testing implementation details 🔬**
