@@ -20,7 +20,7 @@ function YoYoScreen() {
 
   const handleUpdate = React.useCallback(
     updates => dispatch({type: 'update', updates}),
-    [dispatch],
+    [],
   )
 
   return <YoYoInfo yoyo={data} onUpdate={handleUpdate} />
