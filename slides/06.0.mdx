@@ -57,6 +57,7 @@ function DogInfo({dogId}) {
   // didMount
   React.useEffect(() => {
     fetchDog()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // didUpdate
